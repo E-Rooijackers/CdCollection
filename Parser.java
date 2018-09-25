@@ -34,20 +34,24 @@ class Parser
             {
             	Element album = doc.createElement("album");
             	
+            	Element id = doc.createElement("id");
+            	id.setTextContent("" + albums.get(i).id);
+            	album.appendChild(id);
+            	
             	Element name = doc.createElement("name");
-            	name.setNodeValue(albums.get(i).name);
+            	name.setTextContent(albums.get(i).name);            	
             	album.appendChild(name);
             	
             	Element artist = doc.createElement("artist");
-            	name.setNodeValue(albums.get(i).artist);
+            	artist.setTextContent(albums.get(i).artist);
             	album.appendChild(artist);
             	
             	Element genre = doc.createElement("genre");
-            	name.setNodeValue(albums.get(i).genre);
+            	genre.setTextContent(albums.get(i).genre);
             	album.appendChild(genre);
             	
             	Element year = doc.createElement("year");
-            	year.setNodeValue("" + albums.get(i).year);
+            	year.setTextContent("" + albums.get(i).year);
             	album.appendChild(year);
             	
             	rootElement.appendChild(album);
@@ -57,7 +61,7 @@ class Parser
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(new File("C:\\albums.xml"));
+            StreamResult result = new StreamResult(new File("C:\\albums\\albums.xml"));
             transformer.transform(source, result);
             
             // Output to console for testing
@@ -89,24 +93,25 @@ class Parser
             	NodeList nlAlbum = nlAlbums.item(i).getChildNodes();
             	for(int n = 0; n < nlAlbum.getLength(); n++)
             	{
-            		Album album = new Album();
+            		Album album = new Album();	
             		switch (nlAlbum.item(n).getNodeName().toLowerCase())
             		{
-            			case "name":
-            				album.name = nlAlbum.item(n).getNodeValue();
-            				break;
-            			case "artist":
-            				album.artist = nlAlbum.item(n).getNodeValue();
-            				break;
-            			case "genre":
-            				album.genre = nlAlbum.item(n).getNodeValue();
-            				break;
-            			case "year":
-            				album.year = Integer.parseInt(nlAlbum.item(n).getNodeValue());
-            				break;
-            			default:
-            				System.out.println("XML document not as expected in Parser.getXmlData()");
-            				break;
+	            		
+	            		case "name":
+	            				album.name = nlAlbum.item(n).getNodeValue();
+	            				break;
+	            			case "artist":
+	            				album.artist = nlAlbum.item(n).getNodeValue();
+	            				break;
+	            			case "genre":
+	            				album.genre = nlAlbum.item(n).getNodeValue();
+	            				break;
+	            			case "year":
+	            				album.year = Integer.parseInt(nlAlbum.item(n).getNodeValue());
+	            				break;
+	            			default:
+	            				System.out.println("XML document not as expected in Parser.getXmlData()");
+	            				break;
             		}
             		
             		albums.add(album);
