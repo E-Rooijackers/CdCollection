@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class GetData {
 	public static String SearchItem =  Search.searchItem();
 	
@@ -22,7 +21,7 @@ public class GetData {
 					album.name = rs.getString("name");
 					album.artist= rs.getString("artist");
 					album.artist= rs.getString("genre");
-					album.artist= rs.getString("year_of_release");
+					album.artist= rs.getString("year");
 					albums.add(album);
 				} 
 	    		conn.close();
