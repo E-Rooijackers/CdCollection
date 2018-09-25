@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetData {
-	public static String SearchItem =  Search.searchItem();
-	
 	public static List<Album> getAlbums() {
 		List<Album> albums = new ArrayList<Album>();
 		try {
@@ -20,8 +18,8 @@ public class GetData {
 					Album album = new Album();
 					album.name = rs.getString("name");
 					album.artist= rs.getString("artist");
-					album.artist= rs.getString("genre");
-					album.artist= rs.getString("year");
+					album.genre= rs.getString("genre");
+					album.year= rs.getInt("year");
 					albums.add(album);
 				} 
 	    		conn.close();
