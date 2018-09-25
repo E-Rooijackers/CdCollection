@@ -1,8 +1,13 @@
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
 
 import org.w3c.dom.Document;
@@ -14,11 +19,12 @@ class Parser
 {
     public Document getXML(List<Album> albums)
     {
+    	Document doc = null;
     	try {
             DocumentBuilderFactory dbFactory =
             DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.newDocument();
+            doc = dBuilder.newDocument();
             
             // root element
             Element rootElement = doc.createElement("albums");
@@ -44,37 +50,14 @@ class Parser
             	year.setNodeValue("" + albums.get(i).year);
             	album.appendChild(year);
             	
+            	rootElement.appendChild(album);
             }
             
-            
-            
-            rootElement.appendChild(album);
-
-            // setting attribute to element
-            Attr attr = doc.createAttribute("company");
-            attr.setValue("Ferrari");
-            supercar.setAttributeNode(attr);
-
-            // carname element
-            Element carname = doc.createElement("carname");
-            Attr attrType = doc.createAttribute("type");
-            attrType.setValue("formula one");
-            carname.setAttributeNode(attrType);
-            carname.appendChild(doc.createTextNode("Ferrari 101"));
-            supercar.appendChild(carname);
-
-            Element carname1 = doc.createElement("carname");
-            Attr attrType1 = doc.createAttribute("type");
-            attrType1.setValue("sports");
-            carname1.setAttributeNode(attrType1);
-            carname1.appendChild(doc.createTextNode("Ferrari 202"));
-            supercar.appendChild(carname1);
-
             // write the content into xml file
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(new File("C:\\cars.xml"));
+            StreamResult result = new StreamResult(new File("C:\\albums.xml"));
             transformer.transform(source, result);
             
             // Output to console for testing
@@ -83,6 +66,8 @@ class Parser
          } catch (Exception e) {
             e.printStackTrace();
          }
+    	
+    	return doc;
     }
     
     public List<Album> getData(Document doc)
