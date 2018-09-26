@@ -16,6 +16,7 @@ public class GetData {
 				
 				while(rs.next()){  
 					Album album = new Album();
+					album.id = rs.getInt("id");
 					album.name = rs.getString("name");
 					album.artist= rs.getString("artist");
 					album.genre= rs.getString("genre");
@@ -29,7 +30,7 @@ public class GetData {
 		return albums;
 	}
 	
-	public static void TransferData(Album album) {
+	public static boolean TransferData(Album album) {
 
 		try {	
 			Connection conn = DBConnect.connect();
@@ -41,8 +42,10 @@ public class GetData {
 			stmt.setInt(4, album.year);
 			stmt.executeUpdate();
 			conn.close();
+			return true;
 		} catch(SQLException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}		
 }

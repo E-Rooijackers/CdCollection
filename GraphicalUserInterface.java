@@ -1,12 +1,16 @@
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -14,14 +18,22 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 public class GraphicalUserInterface {
 	
+	private JFrame frame;
+	private JTextField tfName;
+	private JTextField tfArtist;
+	private JTextField tfGenre;
+	private JTextField tfYear;
+	
 	public void show()
 	{
-		JFrame frame = new JFrame();
+		frame = new JFrame();
 		frame.setSize(1400, 700);
 		
 		JPanel panel1 = new JPanel(); 
@@ -51,22 +63,22 @@ public class GraphicalUserInterface {
 		JPanel panel2 = new JPanel();
 		panel2.setName("Insert album");
 		JLabel lbName = new JLabel("Name");
-		JTextField tfName = new JTextField();
+		tfName = new JTextField();
 		lbName.setBounds(50,50,100, 20);
 		tfName.setBounds(150,50,300,20);
 		
 		JLabel lbArtist = new JLabel("Artist");
-		JTextField tfArtist = new JTextField();
+		tfArtist = new JTextField();
 		lbArtist.setBounds(50,150,100, 20);
 		tfArtist.setBounds(150,150,300,20);
 		
 		JLabel lbGenre = new JLabel("Genre");
-		JTextField tfGenre = new JTextField();
+		tfGenre = new JTextField();
 		lbGenre.setBounds(50,250,100, 20);
 		tfGenre.setBounds(150,250,300,20);
 		
 		JLabel lbYear = new JLabel("Year");
-		JTextField tfYear = new JTextField();
+		tfYear = new JTextField();
 		lbYear.setBounds(50, 350,100, 20);
 		tfYear.setBounds(150, 350,300,20);
 		
@@ -84,6 +96,31 @@ public class GraphicalUserInterface {
 		
 		panel2.add(lbYear);
 		panel2.add(tfYear);
+		tfYear.getDocument().addDocumentListener(new DocumentListener() {
+		    @Override
+		    public void insertUpdate(DocumentEvent e) {
+		    	if(tfYear.getText().length() > 4)
+		        {
+		        	JOptionPane.showMessageDialog(frame, "Year must be 4 characters long. Reached max. number of characters.", "Input invalid", JOptionPane.WARNING_MESSAGE);
+		        }
+		    }
+
+		    @Override
+		    public void removeUpdate(DocumentEvent e) {
+		    	if(tfYear.getText().length() > 4)
+		        {
+		        	JOptionPane.showMessageDialog(frame, "Year must be 4 characters long. Reached max. number of characters.", "Input invalid", JOptionPane.WARNING_MESSAGE);
+		        }
+		    }
+
+		    @Override
+		    public void changedUpdate(DocumentEvent e) {
+		        if(tfYear.getText().length() > 4)
+		        {
+		        	JOptionPane.showMessageDialog(frame, "Year must be 4 characters long. Reached max. number of characters.", "Input invalid", JOptionPane.WARNING_MESSAGE);
+		        }
+		    }
+		});
 		
 		panel2.add(btnInsert);
 		
@@ -93,6 +130,11 @@ public class GraphicalUserInterface {
 					ActionEvent arg0
 			)
 			{
+				if(!checkkInput())
+				{
+					return;
+				}
+				
 				Album album = new Album();
 				album.name = tfName.getText();
 				album.artist = tfArtist.getText();
@@ -100,6 +142,16 @@ public class GraphicalUserInterface {
 				album.year = Integer.parseInt(tfYear.getText());
 				
 				
+				
+				boolean isInserted = GetData.TransferData(album);
+				if(isInserted)
+				{
+					JOptionPane.showMessageDialog(frame, "Album successfully inserted", "Album inserted", JOptionPane.INFORMATION_MESSAGE);
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(frame, "Album not inserted", "Album not inserted", JOptionPane.WARNING_MESSAGE);
+				}
 			}
 		});
 		
@@ -108,7 +160,7 @@ public class GraphicalUserInterface {
 		JTabbedPane tabs = new JTabbedPane();
 		tabs.add(panel1);
 		tabs.add(panel2);
-		
+
 		frame.add(tabs);
 		frame.setVisible(true);
 	}
@@ -131,4 +183,35 @@ public class GraphicalUserInterface {
 		table.setSize(table.getMaximumSize());
 		return table; 
 	}
+	
+	public boolean checkkInput()
+	{
+		boolean inputOke = true;
+		String msg = "";
+		
+		if(tfName.getText().length() == 0 ||tfArtist.getText().length() == 0
+		|| tfGenre.getText().length() == 0 || tfYear.getText().length() == 0)
+		{
+			inputOke = false;
+			msg = "Not all field have values.";
+		}
+		else if(!isNumeric(tfYear.getText()))
+		{
+			inputOke = false;
+			msg = "Year is not numeric.";
+		}
+		
+		if(!inputOke)
+		{
+			JOptionPane.showMessageDialog(frame, msg, "Input invalid", JOptionPane.WARNING_MESSAGE);
+		}
+		
+		return inputOke;
+	}
+		
+	public boolean isNumeric(String str)
+	{
+	    return str.matches("^(?:(?:\\-{1})?\\d+(?:\\.{1}\\d+)?)$");
+	}
+	
 }
