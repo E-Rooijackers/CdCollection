@@ -9,3 +9,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+class DataController
+{
+	public static Document getXMLDoc()
+	{
+		Parser parser = new Parser();
+		Document doc = parser.getXML(GetData.getAlbums());
+		return doc;
+	}
+}

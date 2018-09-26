@@ -16,6 +16,7 @@ public class GetData {
 				
 				while(rs.next()){  
 					Album album = new Album();
+					album.id = rs.getInt("id");
 					album.name = rs.getString("name");
 					album.artist= rs.getString("artist");
 					album.genre= rs.getString("genre");
