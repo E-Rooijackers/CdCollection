@@ -28,4 +28,20 @@ public class GetData {
 		}
 		return albums;
 	}
+	
+	public static void TransferData(Album album) {
+
+		try {	
+			Connection conn = DBConnect.connect();
+			String query = "INSERT INTO albums (name, artist, genre, year) VALUES (?,?,?,?)";
+			PreparedStatement stmt=conn.prepareStatement(query); 
+			stmt.setString(1, album.name);
+			stmt.setString(2, album.artist);
+			stmt.setString(3, album.genre);
+			stmt.setInt(4, album.year);
+			stmt.executeUpdate();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}		
 }
