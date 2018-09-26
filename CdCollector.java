@@ -26,5 +26,7 @@ class CdCollector
         // Output to console for testing
         StreamResult consoleResult = new StreamResult(System.out);
         transformer.transform(source, consoleResult);
+        
+        gui.show();
     }
 }
