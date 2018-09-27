@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Gegenereerd op: 27 sep 2018 om 12:02
+-- Gegenereerd op: 27 sep 2018 om 12:15
 -- Serverversie: 10.1.33-MariaDB
 -- PHP-versie: 7.2.6
 
@@ -21,6 +21,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `cdcollection`
 --
+CREATE DATABASE IF NOT EXISTS `cdcollection` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `cdcollection`;
 
 -- --------------------------------------------------------
 
@@ -42,9 +44,9 @@ CREATE TABLE IF NOT EXISTS `albums` (
 --
 
 INSERT INTO `albums` (`id`, `name`, `artist`, `genre`, `year`) VALUES
-(1, 'HOI', 'HOI', '1', 2005),
-(2, 'jo', 'hoi', 'dag', 1991),
-(3, 'hai', 'hai', 'hai', 1);
+(1, 'Chronic', 'Dr. Dre', 'Hip-Hop', 1998),
+(2, '2001', 'Dr. Dre', 'Hip-Hop', 1999),
+(3, 'Compton', 'Dr. Dre', 'Hip-Hop', 2016);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
