@@ -5,6 +5,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.*;
 
+import org.json.JSONArray;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -16,5 +17,12 @@ class DataController
 		Parser parser = new Parser();
 		Document doc = parser.getXML(GetData.getAlbums());
 		return doc;
+	}
+	
+	public static JSONArray getJSON()
+	{
+		Parser parser = new Parser();
+		JSONArray jsar = parser.getJSON(GetData.getAlbums());
+		return jsar;
 	}
 }

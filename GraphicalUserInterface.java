@@ -163,6 +163,9 @@ public class GraphicalUserInterface {
 
 		frame.add(tabs);
 		frame.setVisible(true);
+		//Parser parser = new Parser();
+		//String message = parser.getJSON(GetData.getAlbums()).toString();
+		//JOptionPane.showMessageDialog(frame, message, "JSON Test", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	public JTable getAlbumTable()
@@ -193,7 +196,7 @@ public class GraphicalUserInterface {
 		|| tfGenre.getText().length() == 0 || tfYear.getText().length() == 0)
 		{
 			inputOke = false;
-			msg = "Not all field have values.";
+			msg = "Not all fields have values.";
 		}
 		else if(!isNumeric(tfYear.getText()))
 		{

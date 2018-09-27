@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -73,6 +76,27 @@ class Parser
     	
     	return doc;
     }
+    
+    public JSONArray getJSON(List<Album> albums)
+    {
+    	JSONArray jsar = new JSONArray();
+    	
+    	for(Album album : albums)
+    	{
+    		JSONObject json = new JSONObject();
+    		json.put("name", album.name);
+    		json.put("artist", album.artist);
+    		json.put("genre", album.genre);
+    		json.put("year", album.year);
+    		jsar.put(json);
+    	}
+    	
+    	StringWriter out = new StringWriter();
+    	jsar.write(out);
+    	String jsonText = out.toString();
+    	
+    	return jsar;
+    }	
     
     public List<Album> getData(Document doc)
     {
