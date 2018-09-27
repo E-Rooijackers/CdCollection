@@ -1,8 +1,12 @@
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -23,44 +28,42 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.DatePickerSettings;
+import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
+import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
+
 public class GraphicalUserInterface {
 	
 	public JFrame frame;
 	private JTextField tfName;
 	private JTextField tfArtist;
 	private JTextField tfGenre;
-	private JTextField tfYear;
+	private DatePicker dpYear;
+	private JTabbedPane tabs;
+	private JPanel panel1;
 	
 	public void show()
 	{
 		frame = new JFrame();
 		frame.setSize(1400, 700);
 		
-		JPanel panel1 = new JPanel(); 
-		panel1.setName("Database");
+		frame.addWindowListener(new WindowAdapter() {
+		      public void windowClosing(WindowEvent e) {
+		          System.exit(0);
+		        }
+		      });
+		
+		panel1 = new JPanel(); 
+		panel1.setName("Albums");
 		
 		GetData.setGui(this);
 			
+		JPanel panel3 = new JPanel();
+		panel3.setName("Genres");
 		
-		JTable table = getAlbumTable();
 		
-		// Set table sorter
-		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
-		table.setRowSorter(sorter);
-		List<RowSorter.SortKey> sortKeys = new ArrayList<>(25);
-		sortKeys.add(new RowSorter.SortKey(4, SortOrder.ASCENDING));
-		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
-		sorter.setSortKeys(sortKeys);
-		
-		panel1.add(table);
-		
-		JScrollPane scroll = new JScrollPane(table);
-		scroll.createHorizontalScrollBar();
-		JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.add(scroll,BorderLayout.CENTER);
-        panel.setBounds(50, 250, 1400, 500);
-		panel1.add(panel);
+		panel1.add(getAlbumTablePanel());
 		
 		JPanel panel2 = new JPanel();
 		panel2.setName("Insert album");
@@ -80,9 +83,38 @@ public class GraphicalUserInterface {
 		tfGenre.setBounds(150,250,300,20);
 		
 		JLabel lbYear = new JLabel("Year");
-		tfYear = new JTextField();
+		dpYear = new DatePicker();
 		lbYear.setBounds(50, 350,100, 20);
-		tfYear.setBounds(150, 350,300,20);
+		dpYear.setBounds(150, 350,300,20);
+		
+		// TODO: Set date picker to show years only
+		DatePickerSettings dpSet = new DatePickerSettings();
+		dpSet.setAllowKeyboardEditing(false);
+				
+		//dpSet.setFormatForDatesCommonEra("yyyy");
+		dpSet.setVisiblePreviousMonthButton(false);
+		dpSet.setVisibleNextMonthButton(false);
+		dpSet.setVisibleYearMenuButton(true);
+		dpSet.setVisibleTodayButton(false);
+		dpSet.setVisibleClearButton(false);
+		dpYear.setSettings(dpSet);
+		
+		
+		// Create DateChangeListeners and add it to date pickers.
+		dpYear.addDateChangeListener(new DateChangeListener()
+		{  
+			@Override
+			public void dateChanged(DateChangeEvent e) {
+				if(dpYear.getDateStringOrEmptyString() == "")
+				{
+					return;
+				}
+				else if(!dateValid())
+	    		{
+	    			dpYear.clear();
+	    		}
+			}  
+	    }); 
 		
 		JButton btnInsert = new JButton("Insert album");
 		btnInsert.setBounds(50, 450,400, 20);
@@ -97,32 +129,9 @@ public class GraphicalUserInterface {
 		panel2.add(tfGenre);
 		
 		panel2.add(lbYear);
-		panel2.add(tfYear);
-		tfYear.getDocument().addDocumentListener(new DocumentListener() {
-		    @Override
-		    public void insertUpdate(DocumentEvent e) {
-		    	if(tfYear.getText().length() > 4)
-		        {
-		        	JOptionPane.showMessageDialog(frame, "Year must be 4 characters long. Reached max. number of characters.", "Input invalid", JOptionPane.WARNING_MESSAGE);
-		        }
-		    }
-
-		    @Override
-		    public void removeUpdate(DocumentEvent e) {
-		    	if(tfYear.getText().length() > 4)
-		        {
-		        	JOptionPane.showMessageDialog(frame, "Year must be 4 characters long. Reached max. number of characters.", "Input invalid", JOptionPane.WARNING_MESSAGE);
-		        }
-		    }
-
-		    @Override
-		    public void changedUpdate(DocumentEvent e) {
-		        if(tfYear.getText().length() > 4)
-		        {
-		        	JOptionPane.showMessageDialog(frame, "Year must be 4 characters long. Reached max. number of characters.", "Input invalid", JOptionPane.WARNING_MESSAGE);
-		        }
-		    }
-		});
+		panel2.add(dpYear);
+		
+		
 		
 		panel2.add(btnInsert);
 		
@@ -141,14 +150,15 @@ public class GraphicalUserInterface {
 				album.name = tfName.getText();
 				album.artist = tfArtist.getText();
 				album.genre = tfGenre.getText();
-				album.year = Integer.parseInt(tfYear.getText());
+				album.year = (dpYear.getDate().getYear());
 				
 				
 				
 				boolean isInserted = GetData.TransferData(album);
 				if(isInserted)
 				{
-					JOptionPane.showMessageDialog(frame, "Album successfully inserted", "Album inserted", JOptionPane.INFORMATION_MESSAGE);
+					tabs.setSelectedIndex(0);
+					refreshTable();
 				}
 				else
 				{
@@ -159,7 +169,7 @@ public class GraphicalUserInterface {
 		
 		panel2.setLayout(null);
 		
-		JTabbedPane tabs = new JTabbedPane();
+		tabs = new JTabbedPane();
 		tabs.add(panel1);
 		tabs.add(panel2);
 
@@ -170,7 +180,7 @@ public class GraphicalUserInterface {
 		//JOptionPane.showMessageDialog(frame, message, "JSON Test", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	public JTable getAlbumTable()
+	public JPanel getAlbumTablePanel()
 	{
 		List<Album> albums = GetData.getAlbums();
 		String[] columns = {"ID", "Name", "Artist", "Genre", "Year" };	
@@ -186,7 +196,64 @@ public class GraphicalUserInterface {
 		data = lRows.toArray(data);
 		JTable table = new JTable(data, columns); 
 		table.setSize(table.getMaximumSize());
-		return table; 
+		
+		// Set table sorter
+		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
+		table.setRowSorter(sorter);
+		List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+		//sortKeys.add(new RowSorter.SortKey(4, SortOrder.ASCENDING));
+		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+		sorter.setSortKeys(sortKeys);
+		
+		JScrollPane scroll = new JScrollPane(table);
+		scroll.createHorizontalScrollBar();
+		JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.add(scroll,BorderLayout.CENTER);
+        panel.setBounds(50, 250, 1400, 500);
+				
+		return panel; 
+	}
+	
+	public void refreshTable()
+	{
+		panel1.removeAll();
+		panel1.add(getAlbumTablePanel());
+	}
+	
+	public JPanel getGenreTablePanel()
+	{
+		List<Genre> Genres = GetData.getGenres();
+		String[] columns = {"ID", "Genre"};	
+		String[][] data = new String[genres.size()][2];
+		
+		List<String[]> lRows = new ArrayList<String[]>();
+		for(Genre genre : genres)
+		{
+			String[] aRow = {String.valueOf(genre.id), genre.name};
+			lRows.add(aRow);
+		}
+		
+		data = lRows.toArray(data);
+		JTable table = new JTable(data, columns); 
+		table.setSize(table.getMaximumSize());
+		
+		// Set table sorter
+		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
+		table.setRowSorter(sorter);
+		List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+		//sortKeys.add(new RowSorter.SortKey(4, SortOrder.ASCENDING));
+		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+		sorter.setSortKeys(sortKeys);
+		
+		JScrollPane scroll = new JScrollPane(table);
+		scroll.createHorizontalScrollBar();
+		JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.add(scroll,BorderLayout.CENTER);
+        panel.setBounds(50, 250, 1400, 500);
+				
+		return panel; 
 	}
 	
 	public boolean checkkInput()
@@ -195,17 +262,12 @@ public class GraphicalUserInterface {
 		String msg = "";
 		
 		if(tfName.getText().length() == 0 ||tfArtist.getText().length() == 0
-		|| tfGenre.getText().length() == 0 || tfYear.getText().length() == 0)
+		|| tfGenre.getText().length() == 0 || dpYear.getText().length() == 0)
 		{
 			inputOke = false;
 			msg = "Not all fields have values.";
 		}
-		else if(!isNumeric(tfYear.getText()))
-		{
-			inputOke = false;
-			msg = "Year is not numeric.";
-		}
-		
+				
 		if(!inputOke)
 		{
 			JOptionPane.showMessageDialog(frame, msg, "Input invalid", JOptionPane.WARNING_MESSAGE);
@@ -213,10 +275,27 @@ public class GraphicalUserInterface {
 		
 		return inputOke;
 	}
-		
-	public boolean isNumeric(String str)
-	{
-	    return str.matches("^(?:(?:\\-{1})?\\d+(?:\\.{1}\\d+)?)$");
-	}
 	
+	public boolean dateValid()
+	{
+		Long localDate = LocalDate.now().toEpochDay();
+		System.out.println("DPYEAR: "+ dpYear.getDate().toEpochDay());
+		System.out.println("LOCAL: "+ localDate);
+		if(!(dpYear.getDate().toEpochDay() <= localDate))
+		{
+			JOptionPane.showMessageDialog(frame, "Please choose a date before today.", "Date invalid", JOptionPane.WARNING_MESSAGE);
+			return false;
+		}// Must be later than -40150 days ( divided 365 = 110 years. 1970 is epoch)
+		else if(!(dpYear.getDate().toEpochDay() >= -40150))
+		{
+			JOptionPane.showMessageDialog(frame, "Year of release can't be before 1860: the year of when the first sound was recorded.", "Date invalid", JOptionPane.WARNING_MESSAGE);
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+		
+	}
+
 }
