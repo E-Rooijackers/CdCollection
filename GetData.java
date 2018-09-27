@@ -5,11 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 public class GetData {
-	public static GraphicalUserInterface gui;
-	
 	public static List<Album> getAlbums() {
 		List<Album> albums = new ArrayList<Album>();
 		try {
@@ -20,7 +16,6 @@ public class GetData {
 				
 				while(rs.next()){  
 					Album album = new Album();
-					album.id = rs.getInt("id");
 					album.name = rs.getString("name");
 					album.artist= rs.getString("artist");
 					album.genre= rs.getString("genre");
@@ -29,15 +24,12 @@ public class GetData {
 				} 
 	    		conn.close();
 		}catch (SQLException e) {
-			JOptionPane.showMessageDialog(gui.frame, e.toString(),"SQL Exception", JOptionPane.WARNING_MESSAGE);
-			gui.frame.setVisible(true);
-			System.exit(1);
 			e.printStackTrace();
 		}
 		return albums;
 	}
 	
-	public static boolean TransferData(Album album) {
+	public static void TransferData(Album album) {
 
 		try {	
 			Connection conn = DBConnect.connect();
@@ -49,18 +41,33 @@ public class GetData {
 			stmt.setInt(4, album.year);
 			stmt.executeUpdate();
 			conn.close();
-			return true;
 		} catch(SQLException e) {
-			JOptionPane.showMessageDialog(gui.frame, e.toString(),"SQL Exception", JOptionPane.WARNING_MESSAGE);
-			gui.frame.setVisible(true);
-			System.exit(1);
 			e.printStackTrace();
-			return false;
 		}
-	}		
-	
-	public static void setGui(GraphicalUserInterface ui)
-	{
-		gui = ui;
 	}
+	
+	public static List<Genre> getGenre() {
+		List<Genre> genres = new ArrayList<Genre>();
+		try {
+			Connection conn = DBConnect.connect();
+			String query = "SELECT * FROM genres";
+			PreparedStatement stmt=conn.prepareStatement(query);  
+			ResultSet rs=stmt.executeQuery();  
+			while(rs.next()){  
+				Genre genre = new Genre();
+				genre.genre_id = rs.getInt("genre_id");
+				genre.genre= rs.getString("genre");
+				genres.add(genre);
+			} 
+	    	conn.close();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return genres;
+	}
+	
+	
+	
+	
+
 }
