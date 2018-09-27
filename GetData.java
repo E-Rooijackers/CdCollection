@@ -30,6 +30,7 @@ public class GetData {
 	    		conn.close();
 		}catch (SQLException e) {
 			JOptionPane.showMessageDialog(gui.frame, e.toString(),"SQL Exception", JOptionPane.WARNING_MESSAGE);
+			gui.frame.setVisible(true);
 			e.printStackTrace();
 		}
 		return albums;
@@ -50,6 +51,7 @@ public class GetData {
 			return true;
 		} catch(SQLException e) {
 			JOptionPane.showMessageDialog(gui.frame, e.toString(),"SQL Exception", JOptionPane.WARNING_MESSAGE);
+			gui.frame.setVisible(true);
 			e.printStackTrace();
 			return false;
 		}
