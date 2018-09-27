@@ -1,0 +1,3 @@
+C:\DE_MAP_WAARIN_JE_DE_FILES_NEERZET>javac -cp .;mysql-connector-java-5.1.47.jar CdCollector.java
+
+C:\DE_MAP_WAARIN_JE_DE_FILES_NEERZET>java -cp .;mysql-connector-java-5.1.47.jar CdCollector
