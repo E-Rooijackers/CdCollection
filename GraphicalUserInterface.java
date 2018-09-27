@@ -25,7 +25,7 @@ import javax.swing.table.TableRowSorter;
 
 public class GraphicalUserInterface {
 	
-	private JFrame frame;
+	public JFrame frame;
 	private JTextField tfName;
 	private JTextField tfArtist;
 	private JTextField tfGenre;
@@ -38,6 +38,8 @@ public class GraphicalUserInterface {
 		
 		JPanel panel1 = new JPanel(); 
 		panel1.setName("Database");
+		
+		GetData.setGui(this);
 			
 		
 		JTable table = getAlbumTable();

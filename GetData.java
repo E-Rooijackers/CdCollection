@@ -5,7 +5,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 public class GetData {
+	public static GraphicalUserInterface gui;
+	
 	public static List<Album> getAlbums() {
 		List<Album> albums = new ArrayList<Album>();
 		try {
@@ -25,6 +29,7 @@ public class GetData {
 				} 
 	    		conn.close();
 		}catch (SQLException e) {
+			JOptionPane.showMessageDialog(gui.frame, e.toString(),"SQL Exception", JOptionPane.WARNING_MESSAGE);
 			e.printStackTrace();
 		}
 		return albums;
@@ -44,8 +49,14 @@ public class GetData {
 			conn.close();
 			return true;
 		} catch(SQLException e) {
+			JOptionPane.showMessageDialog(gui.frame, e.toString(),"SQL Exception", JOptionPane.WARNING_MESSAGE);
 			e.printStackTrace();
 			return false;
 		}
 	}		
+	
+	public static void setGui(GraphicalUserInterface ui)
+	{
+		gui = ui;
+	}
 }
