@@ -20,7 +20,7 @@ class CdCollector
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         
-        
+        gui.show();
         if(args.length > 0)
         {
         	if(args[0].equals("xml"))
@@ -41,6 +41,6 @@ class CdCollector
         // Output to console for testing
         
         
-        gui.show();
+        
     }
 }
