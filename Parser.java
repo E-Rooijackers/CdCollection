@@ -64,8 +64,8 @@ class Parser
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
- //           StreamResult result = new StreamResult(new File("C:\\albums\\albums.xml"));
-            transformer.transform(source, result);
+            //StreamResult result = new StreamResult(new File("C:\\albums\\albums.xml"));
+            //transformer.transform(source, result);
             
             // Output to console for testing
             StreamResult consoleResult = new StreamResult(System.out);
