@@ -35,7 +35,6 @@ public class GraphicalUserInterface {
 	{
 		frame = new JFrame();
 		frame.setSize(1400, 700);
-		frame.setVisible(true);
 		
 		JPanel panel1 = new JPanel(); 
 		panel1.setName("Database");
