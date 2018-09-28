@@ -1,37 +1,28 @@
-## Welcome to GitHub Pages
+>>>stap 1:
+installeer eerst de sql database door het sql bestand in phpmyadmin te importeren.
 
-You can use the [editor on GitHub](https://github.com/E-Rooijackers/CdCollection/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+>>>stap 2:
+open de cmd prompt en u ziet het volgende:
+	"C:\"
+gebruik vervolgens het "cd" command om de juiste map te selecteren waar de java bestanden staan. 
+zo zal "cd Users" u naar de users map brengen en ziet u: 
+	"C:\Users"
 
-### Markdown
+>>>stap 3:
+Zodra u dus bij de map bent typ u het volgende command:
+	"javac -cp .;lib/* CdCollector.java"
+De commandline zal er dus als volgt uitzien.
+	"C:\DE\MAP\MET\BESTANDEN>javac -cp .;lib/* CdCollector.java"
+druk op enter en wacht totdat de computer klaar is om de bestanden te compilen en u weer dingen in kunt vullen.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+>>>stap4:
+typ nu het volgende command in:
+	"java -cp .;lib/* CdCollector"
+u ziet dus:
+	"C:\Users\Merli\Documents\GIT\CdCollection>java -cp .;lib/* CdCollector"
+druk op enter en het programma zou nu moeten openen.
 
-```markdown
-Syntax highlighted code block
+>>>stap 5:
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/E-Rooijackers/CdCollection/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+Geniet.
