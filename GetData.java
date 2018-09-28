@@ -101,6 +101,34 @@ public class GetData {
 		return id;
 	}
 	
+	public static boolean deleteGenre(int genre_id) {
+		int genre = genre_id;
+		boolean del = false;
+		try {
+			conn = DBConnect.connect();
+			String query = "SELECT name FROM albums WHERE genre = ?";
+			PreparedStatement stmt=conn.prepareStatement(query);  
+			stmt.setInt(1, genre);
+			ResultSet rs = stmt.executeQuery();
+			if(rs != null) {
+				String deletequery = "DELETE FROM genres WHERE  genres.genre_id = ?";
+				PreparedStatement stmt2=conn.prepareStatement(query);  
+				stmt2.setInt(1, genre);
+				stmt2.executeUpdate();
+				del = true;
+				conn.close();
+				return del;
+			}else {
+				del = false;
+				conn.close();
+				return del;
+			}
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+			
+		}
+	
 	public static void setGui(GraphicalUserInterface ui)
 	{
 		gui = ui;
