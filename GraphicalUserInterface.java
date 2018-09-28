@@ -5,6 +5,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -38,7 +40,7 @@ public class GraphicalUserInterface {
 	public JFrame frame;
 	private JTextField tfName;
 	private JTextField tfArtist;
-	private JTextField tfGenre;
+	private JComboBox<String> cbGenre;
 	private DatePicker dpYear;
 	private JTabbedPane tabs;
 	private JPanel panel1;
@@ -61,6 +63,7 @@ public class GraphicalUserInterface {
 			
 		JPanel panel3 = new JPanel();
 		panel3.setName("Genres");
+		panel3.add(getGenreTablePanel());
 		
 		
 		panel1.add(getAlbumTablePanel());
@@ -78,9 +81,10 @@ public class GraphicalUserInterface {
 		tfArtist.setBounds(150,150,300,20);
 		
 		JLabel lbGenre = new JLabel("Genre");
-		tfGenre = new JTextField();
 		lbGenre.setBounds(50,250,100, 20);
-		tfGenre.setBounds(150,250,300,20);
+		
+		cbGenre = new JComboBox<String>(getGenreArray());
+		cbGenre.setBounds(150,250,300,20);
 		
 		JLabel lbYear = new JLabel("Year");
 		dpYear = new DatePicker();
@@ -119,14 +123,19 @@ public class GraphicalUserInterface {
 		JButton btnInsert = new JButton("Insert album");
 		btnInsert.setBounds(50, 450,400, 20);
 		
+		JButton btnClear = new JButton("Clear");
+		btnClear.setBounds(500, 450,400, 20);
+		
 		panel2.add(lbName);
 		panel2.add(tfName);
 		
 		panel2.add(lbArtist);
 		panel2.add(tfArtist);
 		
+		
 		panel2.add(lbGenre);
-		panel2.add(tfGenre);
+		panel2.add(cbGenre);
+		
 		
 		panel2.add(lbYear);
 		panel2.add(dpYear);
@@ -134,6 +143,7 @@ public class GraphicalUserInterface {
 		
 		
 		panel2.add(btnInsert);
+		panel2.add(btnClear);
 		
 		btnInsert.addActionListener(new ActionListener() {
 			@Override
@@ -149,10 +159,8 @@ public class GraphicalUserInterface {
 				Album album = new Album();
 				album.name = tfName.getText();
 				album.artist = tfArtist.getText();
-				album.genre = tfGenre.getText();
+				album.genre = GetData.getGenreID(cbGenre.getSelectedItem());
 				album.year = (dpYear.getDate().getYear());
-				
-				
 				
 				boolean isInserted = GetData.TransferData(album);
 				if(isInserted)
@@ -167,10 +175,24 @@ public class GraphicalUserInterface {
 			}
 		});
 		
+		btnClear.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(
+					ActionEvent arg0
+			)
+			{
+				tfName.setText("");
+				tfArtist.setText("");
+				cbGenre.setSelectedIndex(0);
+				dpYear.setText("");
+			}
+		});
+		
 		panel2.setLayout(null);
 		
 		tabs = new JTabbedPane();
 		tabs.add(panel1);
+		tabs.add(panel3);
 		tabs.add(panel2);
 
 		frame.add(tabs);
@@ -211,7 +233,7 @@ public class GraphicalUserInterface {
         panel.setLayout(new BorderLayout());
         panel.add(scroll,BorderLayout.CENTER);
         panel.setBounds(50, 250, 1400, 500);
-				
+        
 		return panel; 
 	}
 	
@@ -221,16 +243,28 @@ public class GraphicalUserInterface {
 		panel1.add(getAlbumTablePanel());
 	}
 	
+	public String[] getGenreArray()
+	{
+		List<Genre> genreList = GetData.getGenres();
+		String[] genres = new String[genreList.size()];
+		for(int i = 0; i < genreList.size(); i++)
+		{
+			genres[i] = genreList.get(i).genre;
+		} 
+		
+		return genres;
+	}
+	
 	public JPanel getGenreTablePanel()
 	{
-		List<Genre> Genres = GetData.getGenres();
+		List<Genre> genres = GetData.getGenres();
 		String[] columns = {"ID", "Genre"};	
 		String[][] data = new String[genres.size()][2];
 		
 		List<String[]> lRows = new ArrayList<String[]>();
 		for(Genre genre : genres)
 		{
-			String[] aRow = {String.valueOf(genre.id), genre.name};
+			String[] aRow = {String.valueOf(genre.genre_id), genre.genre};
 			lRows.add(aRow);
 		}
 		
@@ -262,7 +296,7 @@ public class GraphicalUserInterface {
 		String msg = "";
 		
 		if(tfName.getText().length() == 0 ||tfArtist.getText().length() == 0
-		|| tfGenre.getText().length() == 0 || dpYear.getText().length() == 0)
+		|| dpYear.getText().length() == 0)
 		{
 			inputOke = false;
 			msg = "Not all fields have values.";
