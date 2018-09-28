@@ -128,6 +128,21 @@ public class GetData {
 			e.printStackTrace();
 			
 		}
+		
+	public static void addGenre(String genre_name) {
+		try {	
+			conn = DBConnect.connect();
+			String query = "INSERT INTO genres (genre) VALUES (?)";
+			PreparedStatement stmt=conn.prepareStatement(query); 
+			stmt.setString(1, genre_name);
+			stmt.executeUpdate();
+			conn.close();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+		
+		
 	
 	public static void setGui(GraphicalUserInterface ui)
 	{
