@@ -23,6 +23,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.event.DocumentEvent;
@@ -44,6 +45,8 @@ public class GraphicalUserInterface {
 	private DatePicker dpYear;
 	private JTabbedPane tabs;
 	private JPanel panel1;
+	private JPanel panel3;
+	private JTable genreTable;
 	
 	public void show()
 	{
@@ -61,7 +64,7 @@ public class GraphicalUserInterface {
 		
 		GetData.setGui(this);
 			
-		JPanel panel3 = new JPanel();
+		panel3 = new JPanel();
 		panel3.setName("Genres");
 		panel3.add(getGenreTablePanel());
 		
@@ -124,7 +127,28 @@ public class GraphicalUserInterface {
 		btnInsert.setBounds(50, 450,400, 20);
 		
 		JButton btnClear = new JButton("Clear");
-		btnClear.setBounds(500, 450,400, 20);
+		btnClear.setBounds(500, 450,100, 20);
+		
+		JButton btnRemoveGenre = new JButton("Delete selected genre");
+		btnRemoveGenre.setBounds(600, 450,150, 20);
+		
+		btnInsert.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(
+					ActionEvent arg0
+			)
+			{
+				if(GetData.deleteGenre(genreTable.getValueAt(genreTable.getSelectedRow(), 0)))
+				{
+					JOptionPane.showMessageDialog(frame, "Genre successfully deleted", "Genre delted", JOptionPane.INFORMATION_MESSAGE);
+					refreshGenreTable();
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(frame, "Could not delete genre. Perhaps you have albums with this genre type?", "Genre not delted", JOptionPane.WARNING_MESSAGE);
+				}
+			}
+		});
 		
 		panel2.add(lbName);
 		panel2.add(tfName);
@@ -140,7 +164,7 @@ public class GraphicalUserInterface {
 		panel2.add(lbYear);
 		panel2.add(dpYear);
 		
-		
+		panel3.add(btnRemoveGenre);
 		
 		panel2.add(btnInsert);
 		panel2.add(btnClear);
@@ -159,14 +183,14 @@ public class GraphicalUserInterface {
 				Album album = new Album();
 				album.name = tfName.getText();
 				album.artist = tfArtist.getText();
-				album.genre = GetData.getGenreID(cbGenre.getSelectedItem());
+				album.genre = GetData.getGenreID(cbGenre.getSelectedItem().toString());
 				album.year = (dpYear.getDate().getYear());
 				
 				boolean isInserted = GetData.TransferData(album);
 				if(isInserted)
 				{
 					tabs.setSelectedIndex(0);
-					refreshTable();
+					refreshAlbumTable();
 				}
 				else
 				{
@@ -211,13 +235,14 @@ public class GraphicalUserInterface {
 		List<String[]> lRows = new ArrayList<String[]>();
 		for(Album album : albums)
 		{
-			String[] aRow = {String.valueOf(album.id), album.name, album.artist, album.genre, String.valueOf(album.year)};
+			String[] aRow = {String.valueOf(album.id), album.name, album.artist, String.valueOf(album.genre_name), String.valueOf(album.year)};
 			lRows.add(aRow);
 		}
 		
 		data = lRows.toArray(data);
 		JTable table = new JTable(data, columns); 
 		table.setSize(table.getMaximumSize());
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
 		// Set table sorter
 		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
@@ -226,6 +251,8 @@ public class GraphicalUserInterface {
 		//sortKeys.add(new RowSorter.SortKey(4, SortOrder.ASCENDING));
 		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
 		sorter.setSortKeys(sortKeys);
+		
+		
 		
 		JScrollPane scroll = new JScrollPane(table);
 		scroll.createHorizontalScrollBar();
@@ -237,10 +264,16 @@ public class GraphicalUserInterface {
 		return panel; 
 	}
 	
-	public void refreshTable()
+	public void refreshAlbumTable()
 	{
 		panel1.removeAll();
 		panel1.add(getAlbumTablePanel());
+	}
+	
+	public void refreshGenreTable()
+	{
+		panel3.removeAll();
+		panel3.add(getAlbumTablePanel());
 	}
 	
 	public String[] getGenreArray()
@@ -249,7 +282,7 @@ public class GraphicalUserInterface {
 		String[] genres = new String[genreList.size()];
 		for(int i = 0; i < genreList.size(); i++)
 		{
-			genres[i] = genreList.get(i).genre;
+			genres[i] = (String) genreList.get(i).genre;
 		} 
 		
 		return genres;
@@ -279,6 +312,9 @@ public class GraphicalUserInterface {
 		//sortKeys.add(new RowSorter.SortKey(4, SortOrder.ASCENDING));
 		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
 		sorter.setSortKeys(sortKeys);
+		
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		genreTable = table;
 		
 		JScrollPane scroll = new JScrollPane(table);
 		scroll.createHorizontalScrollBar();

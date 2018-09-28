@@ -14,15 +14,17 @@ public class GetData {
 		List<Album> albums = new ArrayList<Album>();
 		try {
 				conn = DBConnect.connect();
-				String query = "SELECT * FROM albums";
+				String query = "SELECT * FROM albums ta LEFT JOIN genres tb on ta.genre = tb.genre_id";
 				PreparedStatement stmt=conn.prepareStatement(query);  
 				ResultSet rs=stmt.executeQuery();  
 				
 				while(rs.next()){  
 					Album album = new Album();
+					album.id = rs.getInt("id");
 					album.name = rs.getString("name");
 					album.artist= rs.getString("artist");
-					album.genre= rs.getString("genre");
+					album.genre= rs.getInt("genre");
+					album.genre_name= rs.getString("genre_name");
 					album.year= rs.getInt("year");
 					albums.add(album);
 				} 
@@ -40,7 +42,7 @@ public class GetData {
 			PreparedStatement stmt=conn.prepareStatement(query); 
 			stmt.setString(1, album.name);
 			stmt.setString(2, album.artist);
-			stmt.setString(3, album.genre);
+			stmt.setInt(3, album.genre);
 			stmt.setInt(4, album.year);
 			stmt.executeUpdate();
 			conn.close();
@@ -65,7 +67,7 @@ public class GetData {
 			while(rs.next()){  
 				Genre genre = new Genre();
 				genre.genre_id = rs.getInt("genre_id");
-				genre.genre= rs.getString("genre");
+				genre.genre= rs.getString("genre_name");
 				genres.add(genre);
 			} 
 	    	conn.close();
@@ -81,7 +83,7 @@ public class GetData {
 		int id = 1;
 		try {
 			conn = DBConnect.connect();
-			String query = "SELECT genre_id FROM genres WHERE genre == (?)";
+			String query = "SELECT genre_id FROM genres WHERE genre_name = ?";
 			PreparedStatement stmt=conn.prepareStatement(query);  
 			stmt.setString(1, genretext);
 			ResultSet result = stmt.executeQuery();

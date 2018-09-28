@@ -50,7 +50,7 @@ class Parser
             	album.appendChild(artist);
             	
             	Element genre = doc.createElement("genre");
-            	genre.setTextContent(albums.get(i).genre);
+            	genre.setTextContent("" + albums.get(i).genre);
             	album.appendChild(genre);
             	
             	Element year = doc.createElement("year");
@@ -128,7 +128,7 @@ class Parser
 	            				album.artist = nlAlbum.item(n).getNodeValue();
 	            				break;
 	            			case "genre":
-	            				album.genre = nlAlbum.item(n).getNodeValue();
+	            				album.genre = Integer.parseInt(nlAlbum.item(n).getNodeValue());
 	            				break;
 	            			case "year":
 	            				album.year = Integer.parseInt(nlAlbum.item(n).getNodeValue());
