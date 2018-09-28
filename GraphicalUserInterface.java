@@ -47,6 +47,8 @@ public class GraphicalUserInterface {
 	private JPanel panel1;
 	private JPanel panel3;
 	private JTable genreTable;
+	private JButton btnRemoveGenre;
+	private JButton btnAddGenre;
 	
 	public void show()
 	{
@@ -129,24 +131,40 @@ public class GraphicalUserInterface {
 		JButton btnClear = new JButton("Clear");
 		btnClear.setBounds(500, 450,100, 20);
 		
-		JButton btnRemoveGenre = new JButton("Delete selected genre");
+		btnRemoveGenre = new JButton("Delete selected genre");
 		btnRemoveGenre.setBounds(600, 450,150, 20);
 		
-		btnInsert.addActionListener(new ActionListener() {
+		btnRemoveGenre.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(
 					ActionEvent arg0
 			)
 			{
-				if(GetData.deleteGenre(genreTable.getValueAt(genreTable.getSelectedRow(), 0)))
+			
+				int genre_id = Integer.parseInt(genreTable.getValueAt(genreTable.getSelectedRow(), 0).toString());
+				if(GetData.deleteGenre(genre_id))
 				{
-					JOptionPane.showMessageDialog(frame, "Genre successfully deleted", "Genre delted", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "Genre successfully deleted", "Genre deleted", JOptionPane.INFORMATION_MESSAGE);
 					refreshGenreTable();
 				}
 				else
 				{
-					JOptionPane.showMessageDialog(frame, "Could not delete genre. Perhaps you have albums with this genre type?", "Genre not delted", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "Could not delete genre. Perhaps you have albums with this genre type?", "Genre not deleted", JOptionPane.WARNING_MESSAGE);
 				}
+			}
+		});
+		
+		btnAddGenre = new JButton("Add new genre");
+		btnAddGenre.setBounds(800, 450,150, 20);
+		
+		btnAddGenre.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(
+					ActionEvent arg0
+			)
+			{
+				String new_album = JOptionPane.showInputDialog(frame, "Which genre would you like to add?");
+				GetData.addGenre(new_album);
 			}
 		});
 		
@@ -165,6 +183,7 @@ public class GraphicalUserInterface {
 		panel2.add(dpYear);
 		
 		panel3.add(btnRemoveGenre);
+		panel3.add(btnAddGenre);
 		
 		panel2.add(btnInsert);
 		panel2.add(btnClear);
@@ -273,7 +292,9 @@ public class GraphicalUserInterface {
 	public void refreshGenreTable()
 	{
 		panel3.removeAll();
-		panel3.add(getAlbumTablePanel());
+		panel3.add(getGenreTablePanel());
+		panel3.add(btnRemoveGenre);
+		panel3.add(btnAddGenre);
 	}
 	
 	public String[] getGenreArray()

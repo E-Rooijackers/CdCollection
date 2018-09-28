@@ -112,7 +112,7 @@ public class GetData {
 			ResultSet rs = stmt.executeQuery();
 			if(rs != null) {
 				String deletequery = "DELETE FROM genres WHERE  genres.genre_id = ?";
-				PreparedStatement stmt2=conn.prepareStatement(query);  
+				PreparedStatement stmt2=conn.prepareStatement(deletequery);  
 				stmt2.setInt(1, genre);
 				stmt2.executeUpdate();
 				del = true;
@@ -125,7 +125,11 @@ public class GetData {
 			}
 			
 		}catch(SQLException e){
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(gui.frame, e.toString(),"SQL Exception", JOptionPane.WARNING_MESSAGE);
+			gui.frame.setVisible(true);
+			System.exit(1);
+			return del;
+		}
 			
 		}
 	
