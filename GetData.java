@@ -30,7 +30,9 @@ public class GetData {
 				} 
 	    		conn.close();
 		}catch (SQLException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(gui.frame, e.toString(),"SQL Exception", JOptionPane.WARNING_MESSAGE);
+			gui.frame.setVisible(true);
+			System.exit(1);
 		}
 		return albums;
 	}
@@ -92,7 +94,9 @@ public class GetData {
 			}
 	    	conn.close();
 		}catch (SQLException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(gui.frame, e.toString(),"SQL Exception", JOptionPane.WARNING_MESSAGE);
+			gui.frame.setVisible(true);
+			System.exit(1);
 		}
 		return id;
 	}
