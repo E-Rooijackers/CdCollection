@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetData {
+	public static Connection conn = DBConnect.connect();
+	
 	public static List<Album> getAlbums() {
 		List<Album> albums = new ArrayList<Album>();
 		try {
-				Connection conn = DBConnect.connect();
+				conn = DBConnect.connect();
 				String query = "SELECT * FROM albums";
 				PreparedStatement stmt=conn.prepareStatement(query);  
 				ResultSet rs=stmt.executeQuery();  
@@ -23,11 +25,8 @@ public class GetData {
 					albums.add(album);
 				} 
 	    		conn.close();
-		}catch (SQLException e) 
-		{
-			JOptionPane.showMessageDialog(gui.frame, e.toString(),"SQL Exception", JOptionPane.WARNING_MESSAGE);
-			gui.frame.setVisible(true);
-			System.exit(1);
+		}catch (SQLException e) {
+			e.printStackTrace();
 		}
 		return albums;
 	}
@@ -35,7 +34,7 @@ public class GetData {
 	public static void TransferData(Album album) {
 
 		try {	
-			Connection conn = DBConnect.connect();
+			conn = DBConnect.connect();
 			String query = "INSERT INTO albums (name, artist, genre, year) VALUES (?,?,?,?)";
 			PreparedStatement stmt=conn.prepareStatement(query); 
 			stmt.setString(1, album.name);
@@ -44,20 +43,15 @@ public class GetData {
 			stmt.setInt(4, album.year);
 			stmt.executeUpdate();
 			conn.close();
-			return true;
-		} 
-		catch(SQLException e) 
-		{
-			JOptionPane.showMessageDialog(gui.frame, e.toString(),"SQL Exception", JOptionPane.WARNING_MESSAGE);
-			gui.frame.setVisible(true);
-			System.exit(1);
-        }
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static List<Genre> getGenre() {
 		List<Genre> genres = new ArrayList<Genre>();
 		try {
-			Connection conn = DBConnect.connect();
+			conn = DBConnect.connect();
 			String query = "SELECT * FROM genres";
 			PreparedStatement stmt=conn.prepareStatement(query);  
 			ResultSet rs=stmt.executeQuery();  
@@ -73,4 +67,27 @@ public class GetData {
 		}
 		return genres;
 	}
+	
+	public static int getGenreID(String genretext) {
+		int id = 1;
+		try {
+			conn = DBConnect.connect();
+			String query = "SELECT genre_id FROM genres WHERE genre == (?)";
+			PreparedStatement stmt=conn.prepareStatement(query);  
+			stmt.setString(1, genretext);
+			ResultSet result = stmt.executeQuery();
+			while (result.next()) {
+				id = result.getInt("genre_id");
+			}
+	    	conn.close();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return id;
+	}
+	
+	
+	
+	
+
 }
