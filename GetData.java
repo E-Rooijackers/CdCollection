@@ -5,9 +5,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 public class GetData {
 	public static Connection conn = DBConnect.connect();
-	
+	public static GraphicalUserInterface gui;
 	public static List<Album> getAlbums() {
 		List<Album> albums = new ArrayList<Album>();
 		try {
@@ -31,8 +33,7 @@ public class GetData {
 		return albums;
 	}
 	
-	public static void TransferData(Album album) {
-
+	public static boolean TransferData(Album album) {
 		try {	
 			conn = DBConnect.connect();
 			String query = "INSERT INTO albums (name, artist, genre, year) VALUES (?,?,?,?)";
@@ -43,12 +44,18 @@ public class GetData {
 			stmt.setInt(4, album.year);
 			stmt.executeUpdate();
 			conn.close();
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
+			return true;
+		} 
+		catch(SQLException e) 
+		{
+			JOptionPane.showMessageDialog(gui.frame, e.toString(),"SQL Exception", JOptionPane.WARNING_MESSAGE);
+			gui.frame.setVisible(true);
+			System.exit(1);
+			return false;
+        }
 	}
 	
-	public static List<Genre> getGenre() {
+	public static List<Genre> getGenres() {
 		List<Genre> genres = new ArrayList<Genre>();
 		try {
 			conn = DBConnect.connect();
@@ -63,11 +70,13 @@ public class GetData {
 			} 
 	    	conn.close();
 		}catch (SQLException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(gui.frame, e.toString(),"SQL Exception", JOptionPane.WARNING_MESSAGE);
+			gui.frame.setVisible(true);
+			System.exit(1);
 		}
 		return genres;
 	}
-	
+
 	public static int getGenreID(String genretext) {
 		int id = 1;
 		try {
@@ -86,8 +95,8 @@ public class GetData {
 		return id;
 	}
 	
-	
-	
-	
-
+	public static void setGui(GraphicalUserInterface ui)
+	{
+		gui = ui;
+	}
 }
