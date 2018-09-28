@@ -1,5 +1,3 @@
-import java.io.File;
-
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -25,7 +23,7 @@ class CdCollector
         {
         	if(args[0].equals("xml"))
         	{
-        		DOMSource source = new DOMSource(dataController.getXMLDoc());
+        		DOMSource source = new DOMSource(DataController.getXMLDoc());
         		StreamResult consoleResult = new StreamResult(System.out);
                 transformer.transform(source, consoleResult);
         	}

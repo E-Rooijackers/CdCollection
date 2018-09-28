@@ -3,22 +3,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.lang.reflect.Array;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -26,8 +20,6 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -49,6 +41,7 @@ public class GraphicalUserInterface {
 	private JTable genreTable;
 	private JButton btnRemoveGenre;
 	private JButton btnAddGenre;
+	private int new_album = 0;
 	
 	public void show()
 	{
@@ -163,8 +156,10 @@ public class GraphicalUserInterface {
 					ActionEvent arg0
 			)
 			{
-				String new_album = JOptionPane.showInputDialog(frame, "Which genre would you like to add?");
-				GetData.addGenre(new_album);
+				String new_genre = JOptionPane.showInputDialog(frame, "Which genre would you like to add?", "<Genre>");
+				GetData.addGenre(new_genre);
+				new_album = GetData.getGenreID(new_genre);
+				refreshGenreTable();
 			}
 		});
 		
@@ -204,8 +199,11 @@ public class GraphicalUserInterface {
 				album.artist = tfArtist.getText();
 				album.genre = GetData.getGenreID(cbGenre.getSelectedItem().toString());
 				album.year = (dpYear.getDate().getYear());
+				new_album = 9;
 				
 				boolean isInserted = GetData.TransferData(album);
+				System.out.println("INSERTED? : " + isInserted);
+				System.out.println("Album id : " + new_album);
 				if(isInserted)
 				{
 					tabs.setSelectedIndex(0);
@@ -270,8 +268,6 @@ public class GraphicalUserInterface {
 		//sortKeys.add(new RowSorter.SortKey(4, SortOrder.ASCENDING));
 		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
 		sorter.setSortKeys(sortKeys);
-		
-		
 		
 		JScrollPane scroll = new JScrollPane(table);
 		scroll.createHorizontalScrollBar();
@@ -370,8 +366,7 @@ public class GraphicalUserInterface {
 	public boolean dateValid()
 	{
 		Long localDate = LocalDate.now().toEpochDay();
-		System.out.println("DPYEAR: "+ dpYear.getDate().toEpochDay());
-		System.out.println("LOCAL: "+ localDate);
+
 		if(!(dpYear.getDate().toEpochDay() <= localDate))
 		{
 			JOptionPane.showMessageDialog(frame, "Please choose a date before today.", "Date invalid", JOptionPane.WARNING_MESSAGE);

@@ -136,7 +136,7 @@ public class GetData {
 	public static void addGenre(String genre_name) {
 		try {	
 			conn = DBConnect.connect();
-			String query = "INSERT INTO genres (genre) VALUES (?)";
+			String query = "INSERT INTO genres (genre_name) VALUES (?)";
 			PreparedStatement stmt=conn.prepareStatement(query); 
 			stmt.setString(1, genre_name);
 			stmt.executeUpdate();

@@ -1,4 +1,3 @@
-import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 class Parser
@@ -93,7 +91,7 @@ class Parser
     	
     	StringWriter out = new StringWriter();
     	jsar.write(out);
-    	String jsonText = out.toString();
+    	//String jsonText = out.toString();
     	
     	return jsar;
     }	
